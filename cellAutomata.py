@@ -1,7 +1,6 @@
 import pygame as pg
 import sys, time
 import random
-from copy import copy
 
 pg.init()
 
