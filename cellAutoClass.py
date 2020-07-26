@@ -42,7 +42,7 @@ class cellGame():
 
 		#draw buttons
 		pg.draw.rect(self.__screen, self.__red, pg.Rect(10, self.__size[1]-30, 20, 20) )
-		pg.draw.rect(self.__screen, self.__white, pg.Rect(40, self.__size[1]-30, 40, 20) )
+		pg.draw.rect(self.__screen, self.__white, pg.Rect(40, self.__size[1]-30, 60, 20) )
 		self.__randomButton = textDisp.render("Randomize", 1, self.__black)
 		self.__screen.blit(self.__randomButton, (42, self.__size[1]-25))
 	
@@ -70,7 +70,7 @@ class cellGame():
 			for j in range(self.__screenX):
 				random.seed()
 				num = random.randint(0,100)
-				if(num<60):
+				if(num<35):
 					self.__screenArray[i][j] = 1
 				else:
 					self.__screenArray[i][j] = 0
@@ -78,7 +78,6 @@ class cellGame():
 
 	def begin(self):
 		self.__updateAllSquares()
-		self.randSquare()
 		pg.display.flip()
 
 		#mainloop
@@ -101,6 +100,15 @@ class cellGame():
 							pg.display.flip()
 							time.sleep(0.1)
 							click = (0,0,0)
+					
+					if(position[0]<=100) and (position[0]>=40):
+						if(position[1]>=self.__size[1]-30) and (position[1]<=self.__size[1]-10):
+							self.randSquare()
+							self.__updateAllSquares()
+							pg.display.flip()
+							time.sleep(0.1)
+							click = (0,0,0)
+
 					if(position[0]<=(self.__screenX*self.__squareSize)+self.__squareSize) and (position[0]>=self.__squareSize):
 						if(position[1]>=self.__squareSize) and (position[1]<=(self.__screenY*self.__squareSize)+self.__squareSize):
 							x = (position[0]-self.__squareSize)//self.__squareSize
