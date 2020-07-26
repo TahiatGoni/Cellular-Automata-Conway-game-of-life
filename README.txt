@@ -7,3 +7,10 @@ Version 1:
 	Allows user to draw by clicking on the simulation space
 
 	Resolution, square size and delay time can be adjusted by editing python file
+	
+Update 1.1:
+	This version changes code to make the game its own class
+	
+	New additions:
+		randomize button to randomly generate dead and live cells
+	
