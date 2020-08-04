@@ -1,3 +1,6 @@
+Created by Tahiat Goni.
+Uses pygame library: https://www.pygame.org/news
+
 Version 1:
 	The conway's game of life simulation can be run by running the python script. Requires Pygame to be installed.
 
