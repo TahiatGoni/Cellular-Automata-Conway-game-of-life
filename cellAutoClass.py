@@ -1,6 +1,7 @@
 import pygame as pg
 import sys, time
 import random
+import ButtonClass as btn
 
 pg.init()
 #creating the text displaying system
@@ -23,6 +24,7 @@ class cellGame():
 		self.__buttons = (255,255,255)
 		self.__deadCell =(46,139,87)
 		self.__liveCell = (254,171,185)
+		
 		self.__size = (width, height)
 		self.__squareSize = squareSize
 		self.__screenX = (width-20)//self.__squareSize
@@ -41,12 +43,16 @@ class cellGame():
 		self.__screen.fill(self.__Background)	
 
 		#draw buttons
-		pg.draw.rect(self.__screen, self.__red, pg.Rect(10, self.__size[1]-30, 20, 20) )
-		pg.draw.rect(self.__screen, self.__white, pg.Rect(40, self.__size[1]-30, 60, 20) )
-		self.__randomButton = textDisp.render("Randomize", 1, self.__black)
-		self.__screen.blit(self.__randomButton, (42, self.__size[1]-25))
+		self.__playButton = btn.Button( (((10/width)*100), (((height-30)/height)*100)) , (20,20), "", 1)
+		self.__playButton.setColor(self.__red)
+		self.__playButton.drawOnScreen(self.__screen)
+		
+		self.__randomButton = btn.Button( (((40/width)*100), (((height-30)/height)*100)) , (60,20), "Randomize", 10)
+		self.__randomButton.drawOnScreen(self.__screen)
+		
+		self.__clearButton = btn.Button( (((120/width)*100), (((height-30)/height)*100)) , (60,20), "Clear", 10)
+		self.__clearButton.drawOnScreen(self.__screen)
 	
-
 	def __updateAllSquares(self):
 		"Based on state of array, draws corresponding square into grid"
 		for i in range(self.__screenY):
@@ -64,7 +70,7 @@ class cellGame():
 			pg.draw.rect(self.__screen, self.__liveCell, pg.Rect(self.__squareSize+j*self.__squareSize, self.__squareSize+i*self.__squareSize, self.__squareSize, self.__squareSize))	
 
 	
-	def randSquare(self):
+	def __randSquare(self):
 		"initialization of random states in the grid"
 		for i in range(self.__screenY):
 			for j in range(self.__screenX):
@@ -75,11 +81,18 @@ class cellGame():
 				else:
 					self.__screenArray[i][j] = 0
 
+	def __clearSquare(self):
+		"initialization of random states in the grid"
+		for i in range(self.__screenY):
+			for j in range(self.__screenX):
+				
+				self.__screenArray[i][j] = 0
+						
 
+	
 	def begin(self):
 		self.__updateAllSquares()
 		pg.display.flip()
-
 		#mainloop
 		while(1):
 			for event in pg.event.get():
@@ -88,26 +101,30 @@ class cellGame():
 			#check click
 			click = pg.mouse.get_pressed()
 			
-			
 			#if mode is edit(which is 0), let user change mode or square state
 			if(self.__mode == 0):
 				if(click[0]==True):
 					position = pg.mouse.get_pos()
-					if(position[0]<=30) and (position[0]>=10):
-						if(position[1]>=self.__size[1]-30) and (position[1]<=self.__size[1]-10):
-							self.__mode = 1
-							pg.draw.rect(self.__screen, self.__green, pg.Rect(10, self.__size[1]-30, 20, 20) )
-							pg.display.flip()
-							time.sleep(0.1)
-							click = (0,0,0)
+					if(self.__playButton.checkHover(self.__screen)):
+						self.__mode = 1
+						self.__playButton.setColor(self.__green)
+						self.__playButton.drawOnScreen(self.__screen)
+						pg.display.flip()
+						time.sleep(0.1)
+						click = (0,0,0)
 					
-					if(position[0]<=100) and (position[0]>=40):
-						if(position[1]>=self.__size[1]-30) and (position[1]<=self.__size[1]-10):
-							self.randSquare()
+					if(self.__randomButton.checkHover(self.__screen)):
+							self.__randSquare()
 							self.__updateAllSquares()
 							pg.display.flip()
 							time.sleep(0.1)
 							click = (0,0,0)
+
+					if(self.__clearButton.checkHover(self.__screen)):
+						self.__clearSquare()
+						self.__updateAllSquares()
+						pg.display.flip()
+
 
 					if(position[0]<=(self.__screenX*self.__squareSize)+self.__squareSize) and (position[0]>=self.__squareSize):
 						if(position[1]>=self.__squareSize) and (position[1]<=(self.__screenY*self.__squareSize)+self.__squareSize):
@@ -121,7 +138,9 @@ class cellGame():
 							self.__updateSquare(x,y)
 							pg.display.flip()
 							time.sleep(0.5)
-							click = (0,0,0)		
+							click = (0,0,0)
+					
+										
 
 			#while mode is run(which is 1), simulation is run, pressing any key stops simulation
 
@@ -160,18 +179,24 @@ class cellGame():
 				pg.display.flip()
 				events = pg.event.get()
 				for event in events:
-					if(event.type==pg.KEYDOWN):	
+					if(event.type == pg.QUIT):
+						sys.exit()
+
+					elif(event.type==pg.KEYDOWN):	
 						if event.key==pg.K_SPACE:	
 							self.__mode = 0
-							pg.draw.rect(self.__screen, self.__red, pg.Rect(10, self.__size[1]-30, 20, 20) )								
+							self.__playButton.setColor(self.__red)
+							self.__playButton.drawOnScreen(self.__screen)								
 							pg.display.flip()
 							time.sleep(0.1)
 																	
 
-
+	def __str__(self):
+		displayText = "Cell game of resolution: "	+ str(self.__size[0]) + " X "	+ str(self.__size[1]) + " square Size: " + str(self.__squareSize)				
+		return displayText
 
 if (__name__ == "__main__"):
 
-	game = cellGame(640,480,4)
-
+	game = cellGame(640,480,8)
+	print(game)
 	game.begin()
