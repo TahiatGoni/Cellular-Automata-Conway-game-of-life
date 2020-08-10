@@ -2,6 +2,7 @@ import pygame as pg
 import sys, time
 import random
 import ButtonClass as btn
+import TextBoxClass as tBox
 
 pg.init()
 #creating the text displaying system
@@ -30,6 +31,8 @@ class cellGame():
 		self.__screenX = (width-20)//self.__squareSize
 		self.__screenY = (height-40)//self.__squareSize
 
+		self.__delayTime = 0
+		
 		#creating the grid of squares
 		self.__screenArray = {}
 		self.__arrayMem = {}
@@ -42,6 +45,8 @@ class cellGame():
 		pg.display.set_caption('Cellular Automata')
 		self.__screen.fill(self.__Background)	
 
+		
+
 		#draw buttons
 		self.__playButton = btn.Button( (((10/width)*100), (((height-30)/height)*100)) , (20,20), "", 1)
 		self.__playButton.setColor(self.__red)
@@ -52,6 +57,9 @@ class cellGame():
 		
 		self.__clearButton = btn.Button( (((120/width)*100), (((height-30)/height)*100)) , (60,20), "Clear", 10)
 		self.__clearButton.drawOnScreen(self.__screen)
+		
+		self.__delay = tBox.TextBox( (((200/width)*100), (((height-30)/height)*100)) , (40,20), "delay(s)", 10)
+		self.__delay.drawOnScreen(self.__screen)
 	
 	def __updateAllSquares(self):
 		"Based on state of array, draws corresponding square into grid"
@@ -93,6 +101,7 @@ class cellGame():
 	def begin(self):
 		self.__updateAllSquares()
 		pg.display.flip()
+		text = ""
 		#mainloop
 		while(1):
 			for event in pg.event.get():
@@ -124,6 +133,13 @@ class cellGame():
 						self.__clearSquare()
 						self.__updateAllSquares()
 						pg.display.flip()
+					
+					if(self.__delay.checkHover(self.__screen)):
+						self.__delay.setText("delay(s)")
+						self.__delay.drawOnScreen(self.__screen)
+						text = self.__delay.GetInput(self.__screen, text)		
+						self.__delayTime = float(text)
+						self.__delay.drawOnScreen(self.__screen)
 
 
 					if(position[0]<=(self.__screenX*self.__squareSize)+self.__squareSize) and (position[0]>=self.__squareSize):
@@ -174,8 +190,8 @@ class cellGame():
 
 				#display new state and check if user pressed space to pause
 				self.__updateAllSquares()
-				#uncomment if simulation is too fast
-				#time.sleep(0.1)
+				
+				time.sleep(self.__delayTime)
 				pg.display.flip()
 				events = pg.event.get()
 				for event in events:
@@ -197,6 +213,6 @@ class cellGame():
 
 if (__name__ == "__main__"):
 
-	game = cellGame(640,480,8)
+	game = cellGame(1024,768,16)
 	print(game)
 	game.begin()
