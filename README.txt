@@ -16,4 +16,9 @@ Update 1.1:
 	
 	New additions:
 		randomize button to randomly generate dead and live cells
+
+Update 1.2:
+	CellAutoClass now uses self developed button and textbox classes
 	
+	New additions:
+		delay can be added per screen update using the delay(s) textbox
