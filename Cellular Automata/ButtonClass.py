@@ -104,9 +104,12 @@ class TextBox(Button):
 		disp_limit = round((self.getDimension()[0]/self.textFontSize)*1.6) - 1
 		while(True):
 			events = pg.event.get()
+			click = pg.mouse.get_pressed()
+			if(click[0]):
+				time.sleep(0.1)
 			for event in events:
-				if(event.type==pg.KEYDOWN):
-					if(event.key==pg.K_RETURN):
+				if(click[0]) or (event.type==pg.KEYDOWN):
+					if(click[0]) or (event.key==pg.K_RETURN):
 						#_______________________________________
 						if(len(self.__text)<disp_limit):
 							self.__dispText = self.__text
@@ -187,8 +190,7 @@ class TextBox(Button):
 				else:
 					blank = True			
 				
-				cursor_time = time.time()		
-
+				cursor_time = time.time()
 
 
 if(__name__ == "__main__"):
